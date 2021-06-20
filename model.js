@@ -9,7 +9,12 @@ class Model extends Eventful {
 	constructor(data = {}) {
 		super();
 
-		this.data = data;
+		this.propertyEventHanders = {};
+
+		this.data = {};
+		for (const key in data) {
+			this.set(key, data[key]);
+		}
 	}
 
 	/**
@@ -19,10 +24,22 @@ class Model extends Eventful {
 	 */
 	set(key, value) {
 		if (this.data[key] !== value) {
+			if (this.data[key] instanceof Model) {
+				this.stopListeningTo(this.data[key], 'change', this.propertyEventHanders[key]);
+				this.propertyEventHanders[key] = null;
+			}
+
 			if (value === undefined) {
 				delete this.data[key];
 			} else {
 				this.data[key] = value;
+
+				if (value instanceof Model) {
+					this.propertyEventHanders[key] = () => {
+						this.trigger('change');
+					};
+					this.listenTo(value, 'change', this.propertyEventHanders[key]);
+				}
 			}
 
 			this.trigger('change', key);

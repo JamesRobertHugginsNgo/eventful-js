@@ -1,7 +1,14 @@
 class SectionView extends View {
 	render(model) {
 		if (model) {
-			this.el.innerHTML = `<p>${model.get('text')}</p>`;
+			if (model.get('random') && model.get('random').get('number')) {
+				this.el.innerHTML = `
+					<p>${model.get('text')}</p>
+					<p>${model.get('random').get('number')}</p>
+				`;
+			} else {
+				this.el.innerHTML = `<p>${model.get('text')}</p>`;
+			}
 		} else {
 			this.el.innerHTML = '';
 		}
@@ -18,7 +25,14 @@ class Controller extends Eventful {
 
 		this.listenTo(this.section, 'click', () => {
 			if (this.model) {
-				this.model.set('text', Math.floor(Math.random() * 1000))
+				const number =  Math.floor(Math.random() * 1000);
+				const random = this.model.get('random');
+				if (random) {
+					random.set('number', number);
+				} else {
+					const newRandom = new Model({ number });
+					this.model.set('random', newRandom);
+				}
 			}
 		});
 	}
@@ -56,4 +70,4 @@ controller.appendTo(document.body);
 const model = new Model({ text: 'HELLO WORLD' });
 controller.setModel(model);
 
-controller.terminate();
+// controller.terminate();
