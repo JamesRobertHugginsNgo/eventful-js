@@ -64,10 +64,13 @@ class Controller extends Eventful {
 	}
 }
 
-const controller = new Controller();
-controller.appendTo(document.body);
+////////////////////////////////////////////////////////////////////////////////
+// MAIN
+////////////////////////////////////////////////////////////////////////////////
 
 const model = new Model({ text: 'HELLO WORLD' });
-controller.setModel(model);
 
+const controller = new Controller();
+controller.appendTo(document.body);
+controller.setModel(model);
 // controller.terminate();
