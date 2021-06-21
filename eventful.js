@@ -4,11 +4,11 @@
 class Eventful {
 
 	/**
-	 * Sets the id and initialize the events and listeningTo properties.
+	 * Sets a unique id and initialize events and listeningTo properties.
 	 */
 	constructor() {
-		// this.id = this.constructor.getId();
 		this.id = Eventful.getId();
+
 		this.events = {};
 		this.listeningTo = {};
 	}
@@ -21,19 +21,22 @@ class Eventful {
 	 * @param {Eventful} [owner]
 	 */
 	on(event, handler, once, owner) {
-		if (!this.events[event]) {
-			this.events[event] = { handlers: [] };
-		}
-
 		const item = { handler, once, owner };
 
+		if (!this.events[event]) {
+			this.events[event] = {
+				handlers: [],
+			};
+		}
 		this.events[event].handlers.push(item);
 
 		if (owner) {
 			if (!owner.listeningTo[this.id]) {
-				owner.listeningTo[this.id] = { other: this, handlers: [] };
+				owner.listeningTo[this.id] = {
+					other: this,
+					handlers: [],
+				};
 			}
-
 			owner.listeningTo[this.id].handlers.push(item);
 		}
 	}
@@ -56,7 +59,6 @@ class Eventful {
 
 					handlers.splice(index, 1);
 
-					// this.constructor.removeListeningTo(item, this.id);
 					Eventful.removeListeningTo(item, this.id);
 
 					if (event != null && handler != null) {
@@ -98,7 +100,6 @@ class Eventful {
 				if (item.once) {
 					handlers.splice(index, 1);
 
-					// this.constructor.removeListeningTo(item, this.id);
 					Eventful.removeListeningTo(item, this.id);
 				} else {
 					index++;
